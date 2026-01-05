@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mantrax Network Launcher</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <video id="bgVideo" autoplay muted loop>
+        <source src="https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/videos/Homepage_Gameplay-Trailer_MC-OV_1080x720.webm" type="video/webm">
+    </video>
+
+    <!-- Login Screen -->
+    <div id="loginScreen">
+        <div class="login-overlay"></div>
+        
+        <div class="login-container">
+            <div class="login-box">
+                <div class="login-header">
+                    <div class="login-logo">
+                        <img src="logo_2.png">
+                    </div>
+                    <h1 class="login-title">MANTRAX</h1>
+                    <div class="login-subtitle">
+                        <div class="status-dot"></div>
+                        <p>PREMIUM LAUNCHER</p>
+                    </div>
+                </div>
+
+                <div>
+                    <button id="microsoftLoginBtn" class="btn btn-microsoft">
+                        <i class="fab fa-microsoft"></i>
+                        <div style="text-align: left;">
+                            <div style="font-size: 16px; font-weight: 900;">Iniciar con Microsoft</div>
+                            <div style="font-size: 11px; opacity: 0.8;">Cuenta Premium</div>
+                        </div>
+                    </button>
+
+                    <div class="divider">
+                        <span>O MODO OFFLINE</span>
+                    </div>
+
+                    <form id="offlineLoginForm">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input 
+                                type="text" 
+                                id="usernameInput"
+                                class="input"
+                                placeholder="Nombre de usuario"
+                                required
+                                minlength="3"
+                                maxlength="16"
+                            >
+                        </div>
+                        <button type="submit" class="btn btn-offline">
+                            Entrar en Modo Offline
+                        </button>
+                    </form>
+                </div>
+
+                <div class="login-footer">
+                    <p>Se recomienda usar cuenta Microsoft para acceso completo</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Microsoft Auth Loading -->
+    <div id="msAuthLoading">
+        <div class="auth-loading-overlay"></div>
+        <div class="auth-loading-box" style="min-width: 500px;">
+            <div>
+                <i class="fab fa-microsoft"></i>
+            </div>
+            <h3>Autenticando con Microsoft</h3>
+            <p style="margin-bottom: 20px;">1. Se abrirá el navegador, completa el login</p>
+            <p style="margin-bottom: 20px;">2. Copia la URL completa de la página de error/callback</p>
+            <p style="margin-bottom: 20px;">3. Pégalo aquí:</p>
+            <div style="margin-bottom: 20px;">
+                <input type="text" id="callbackUrlInput" placeholder="Pega la URL completa aquí..." 
+                       style="width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 2px solid #444; border-radius: 4px; color: #fff; font-size: 14px;">
+            </div>
+            <button id="processCallbackBtn" style="width: 100%; padding: 12px; background: #0078d4; border: none; border-radius: 4px; color: #fff; font-weight: 700; cursor: pointer; margin-bottom: 12px;">
+                Procesar URL
+            </button>
+            <button id="cancelAuthBtn" style="width: 100%; padding: 8px; background: rgba(100,100,100,0.3); border: 2px solid #666; border-radius: 4px; color: #ccc; font-weight: 600; cursor: pointer;">
+                Cancelar
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Screen -->
+    <div id="mainScreen">
+        <div class="main-overlay"></div>
+
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <div class="top-bar-logo">
+                    <img src="logo_2.png">
+                </div>
+                <div class="top-bar-title">
+                    <span class="name">MANTRAX</span>
+                    <span class="separator">|</span>
+                    <span class="version">v3.1.0</span>
+                </div>
+            </div>
+            
+            <div class="top-bar-right">
+                <div class="user-info">
+                    <img id="userAvatar" src="" class="hidden">
+                    <i id="userIcon" class="fas fa-user"></i>
+                    <div class="user-details">
+                        <div class="username" id="displayUsername">Usuario</div>
+                        <div class="account-type" id="accountType">Offline</div>
+                    </div>
+                </div>
+                <button id="toggleConsoleBtn" class="window-control">
+                    <i class="fas fa-terminal"></i>
+                </button>
+                <button id="minimizeBtn" class="window-control">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button id="maximizeBtn" class="window-control">
+                    <i class="fas fa-square"></i>
+                </button>
+                <button id="closeBtn" class="window-control close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            <!-- Left Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-content">
+                    <div class="sidebar-section">
+                        <button class="sidebar-btn">
+                            <i class="fas fa-home"></i>
+                            Inicio
+                        </button>
+                        
+                        <button id="openMinecraftFolder" class="sidebar-btn secondary">
+                            <i class="fas fa-folder-open"></i>
+                            Abrir Carpeta
+                        </button>
+                        
+                        <button id="manageProfilesBtn" class="sidebar-btn purple">
+                            <i class="fas fa-user-cog"></i>
+                            Gestionar Perfiles
+                        </button>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <div class="section-title">Perfil Actual</div>
+                        <div class="info-card purple">
+                            <div class="info-card-header">
+                                <div class="info-card-title">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span id="currentProfileName">Default</span>
+                                </div>
+                                <button id="switchProfileBtn" style="background: none; border: none; color: #ba68c8; cursor: pointer; padding: 4px;">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </button>
+                            </div>
+                            <div class="info-card-value">
+                                Versión: <strong id="profileVersion">---</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <div class="section-title">Estado del Servidor</div>
+                        <div class="info-card">
+                            <div class="status-item">
+                                <label>Estado</label>
+                                <div id="serverStatusDot" class="status-dot-small"></div>
+                            </div>
+                            <div style="font-size: 14px; font-weight: 700; color: #ffffff; margin-bottom: 12px;" id="serverStatusText">Verificando...</div>
+                            <div class="status-item">
+                                <label>Ping</label>
+                                <value id="pingText" style="color: #4caf50;">---</value>
+                            </div>
+                            <div class="status-item">
+                                <label>Jugadores</label>
+                                <value id="onlinePlayers">0</value>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <div class="info-card">
+                            <div class="info-card-title" style="margin-bottom: 16px;">
+                                <i class="fas fa-memory"></i>
+                                <span>Memoria RAM</span>
+                            </div>
+                            <div class="ram-control">
+                                <div class="ram-value"><span id="ramValue">4</span>GB</div>
+                                <input type="range" id="ramSlider" min="2" max="16" value="4" class="ram-slider">
+                                <div class="ram-limits">
+                                    <span>2GB</span>
+                                    <span>16GB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-footer">
+                    <button id="logoutBtn" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content" id="mainContent">
+                <!-- Hero Section -->
+                <div class="hero-section">
+                    <div class="hero-content">
+                        <div class="status-badge">
+                            <span>
+                                <div class="status-dot"></div>
+                                SERVIDOR EN LÍNEA
+                            </span>
+                        </div>
+                        <h1 class="hero-title">
+                            BIENVENIDO A<br>
+                            <span class="highlight">MANTRAX</span>
+                        </h1>
+                        <p class="hero-subtitle">La mejor experiencia de Minecraft te espera</p>
+                    </div>
+                </div>
+
+                <!-- Download Progress -->
+                <div id="downloadProgress" class="download-progress">
+                    <div class="download-header">
+                        <div class="download-info">
+                            <div class="download-icon">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div class="download-text">
+                                <h3 id="downloadStatus">Preparando descarga...</h3>
+                                <p id="downloadDetails">Iniciando...</p>
+                            </div>
+                        </div>
+                        <span class="download-percent" id="downloadPercent">0%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="content-area">
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-gamepad"></i>
+                            </div>
+                            <h3>Múltiples Modos</h3>
+                            <p>Survival, SkyBlock, PvP</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h3>Sin Lag</h3>
+                            <p>Servidores 24/7</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <h3>Eventos Diarios</h3>
+                            <p>Premios increíbles</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions Bar -->
+                <div class="actions-bar">
+                    <div class="actions-grid">
+                        <button id="downloadModsBtn" class="action-btn purple">
+                            <div class="action-icon">
+                                <i class="fas fa-puzzle-piece"></i>
+                            </div>
+                            <div class="action-text">
+                                <div class="title">Descargar Mods</div>
+                                <div class="subtitle">Pack Mantrax Network</div>
+                            </div>
+                        </button>
+
+                        <button id="settingsBtn" class="action-btn gray">
+                            <div class="action-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <div class="action-text">
+                                <div class="title">Configuración</div>
+                                <div class="subtitle">Ajustes avanzados</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Launch Bar -->
+                <div class="launch-bar">
+                    <div class="launch-container">
+                        <div class="launch-select-group">
+                            <label class="launch-select-label">Versión de Minecraft</label>
+                            <select id="versionSelect" class="launch-select">
+                                <option>Cargando versiones...</option>
+                            </select>
+                        </div>
+
+                        <button id="launchBtn" class="launch-btn">
+                            <i id="launchIcon" class="fas fa-play"></i>
+                            <span id="launchText">JUGAR AHORA</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Console Sidebar (Right) -->
+            <div id="consoleSidebar" class="console-sidebar">
+                <div class="console-header">
+                    <h3>
+                        <i class="fas fa-terminal"></i>
+                        Console
+                    </h3>
+                    <button id="closeConsoleBtn" class="window-control">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="console-content">
+                    <div id="consoleLog">
+                        <div class="console-entry success">[SYSTEM] Launcher iniciado...</div>
+                    </div>
+                </div>
+                
+                <div class="console-footer">
+                    <button id="clearConsoleBtn" class="console-clear-btn">
+                        <i class="fas fa-trash-alt" style="margin-right: 8px;"></i>
+                        Limpiar Console
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profiles Modal -->
+    <div id="profilesModal" class="modal">
+        <div class="modal-overlay" id="profilesModalBg"></div>
+        
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2>Gestionar Perfiles</h2>
+                    <p>Crea y administra tus perfiles de juego</p>
+                </div>
+                <button id="closeProfilesModal" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div style="margin-bottom: 24px;">
+                    <button id="createProfileBtn" class="form-btn submit" style="width: 100%;">
+                        <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                        Crear Nuevo Perfil
+                    </button>
+                </div>
+                
+                <div id="profilesList" class="profiles-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Profile Modal -->
+    <div id="createProfileModal" class="modal">
+        <div class="modal-overlay" id="createProfileModalBg"></div>
+        
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <div>
+                    <h2>Crear Perfil</h2>
+                    <p>Configura tu nuevo perfil</p>
+                </div>
+            </div>
+            
+            <div class="modal-body">
+                <form id="createProfileForm" class="modal-form">
+                    <div class="form-group">
+                        <label class="form-label">Nombre del Perfil</label>
+                        <input 
+                            type="text" 
+                            id="profileNameInput"
+                            class="form-input"
+                            placeholder="Ej: Survival, Modded, PvP"
+                            required
+                            minlength="3"
+                            maxlength="20"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Versión de Minecraft</label>
+                        <select id="profileVersionSelect" class="form-select">
+                            <option>Cargando versiones...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Memoria RAM</label>
+                        <div class="form-range-group">
+                            <input type="range" id="profileRamSlider" min="2" max="16" value="4" class="form-range">
+                            <span class="form-range-value"><span id="profileRamValue">4</span>GB</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="cancelCreateProfile" class="form-btn cancel">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="form-btn submit">
+                            Crear Perfil
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
+
+</html>
