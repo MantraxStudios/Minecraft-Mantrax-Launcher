@@ -13,8 +13,8 @@
     "adm-zip": "^0.5.10"
   },
   "devDependencies": {
-    "electron": "^28.3.3",
-    "electron-builder": "^24.9.1",
+    "electron": "^42.4.1",
+    "electron-builder": "^26.15.3",
     "electron-packager": "^17.1.2"
   },
   "build": {
